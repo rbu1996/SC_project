@@ -1,8 +1,7 @@
-def recur(i):
-    if i == 0:
-        return 0
-    if i == 1:
-        return 1
-    return recur(i-1) + recur(i -2)
-
-print(recur(10))
+import copy
+lis = [1, 2, 3]
+liss = [2,3, 5]
+res = lis + liss
+# copy_liss = liss
+# liss.remove(5)
+print(res)
