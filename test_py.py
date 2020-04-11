@@ -109,20 +109,82 @@ def pass_goal(lazor_points, copy_goal_points, reflect_point):
             if lazor_point in copy_goal_points:
                 copy_goal_points.remove(lazor_point)
 
-# file = 'mul_lazor.bff'
-# grid, blocks, start_points, intersect_points, max_x, max_y = read_bff(file)
+def get_intersect_point(intersect_grid, lazor_points):
+    possible_intersect_point = set()
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, 1, -1]
+    for int_grid in intersect_grid:
+        for i in range(4):
+            possible_intersect_point.add((int_grid[0] + dx[i], int_grid[1] + dy[i], reflect_point[2], reflect_point[3]))
+    for point in lazor_points:
+        if point in possible_intersect_point:
+            return point
+    '''
+    # print('reflect_point', reflect_point)
+    intersect_point = set()
+    intersect_grid_list = list(intersect_grid)
+    # print('==', intersect_grid_list)
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, 1, -1]
+    for int_grid in intersect_grid_list:
+        for i in range(4):
+            intersect_point.add((int_grid[0] + dx[i], int_grid[1] + dy[i], reflect_point[2], reflect_point[3]))
+    return intersect_point
+    '''
 
-# reflect_point = (3, 2, -1, -1)
-# lazor_points, lazor_pass_grid = cal_lazor(reflect_point, grid)
+def cal_reflect_start(point):
+    dx = point[2]
+    dy = point[3]
+    if point[0] % 2 == 0:
+        dx *= -1
+        # dx = point[2] * -1
+    if point[1] % 2 == 0:
+        dy *= -1
+        # dy = point[3] * -1
+    return (point[0], point[1], dx, dy)
 
-# print('lazor_points', lazor_points)
-# print('lazor_pass_grid', lazor_pass_grid)
+def calculate_dis(a, b):
+    dis = 0
+    for i in range(2):
+        dis += (a[i] - b[i]) ** 2
+    return dis
+
+def find_closest_position(reflect_point, intersect):
+    closest_position = list(intersect)[0]
+    min_dis = calculate_dis(closest_position, reflect_point)
+    for pos in list(intersect):
+        if min_dis > calculate_dis(pos, reflect_point):
+            closest_position = pos
+    return closest_position
 
 
-lazor_points = [(4, 5, -1, 1), (3, 6, -1, 1)]
-reflect_point = ()
-copy_goal_points = {(3, 6)}
-pass_goal(lazor_points, copy_goal_points, reflect_point)
+
+file = 'easy.bff'
+grid, blocks, start_points, intersect_points, max_x, max_y = read_bff(file)
+
+reflect_point = (3, 6, 1, -1)
+lazor_points, lazor_pass_grid = cal_lazor(reflect_point, grid)
+
+print('lazor_points', lazor_points)
+print('lazor_pass_grid', lazor_pass_grid)
+
+intersect_grid = {(7, 1)}
+# intersect_point = get_intersect_point(intersect_grid, reflect_point)
+intersect_point = get_intersect_point(intersect_grid, lazor_points)
+# 在所有的可能的反射面里面求出距离光点最近的 新的反射点
+# closest_position = find_closest_position(reflect_point, intersect_point)
+# closest_grid = find_closest_position(reflect_point, intersect_grid)
+# 新的反射点 update reflect_point
+reflect_point = cal_reflect_start(intersect_point)
+
+print(intersect_point)
+print(intersect_point)
+print(reflect_point)
+
+# lazor_points = [(4, 5, -1, 1), (3, 6, -1, 1)]
+# reflect_point = ()
+# copy_goal_points = {(3, 6)}
+# pass_goal(lazor_points, copy_goal_points, reflect_point)
 
 
 

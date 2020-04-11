@@ -1,11 +1,16 @@
+# cd Software\ Carpentry/LazorProject/SC_project/
 
-a = []
-a.append(1)
-a.append(2)
-for i in a:
-    if i == 1:
-        a.append(5)
-    print(i)
+
+# a = []
+# a.append(1)
+# a.append(2)
+# for i in a:
+#     if i == 1:
+#         a.append(5)
+#     print(i)
+
+while True:
+    print('===')
 
 '''
 import itertools
