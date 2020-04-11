@@ -1,6 +1,12 @@
 import itertools
 import copy
 
+class Solution_Info:
+    def __init__(self, x, y, z):
+        self.block_position_list = x
+        self.lazor_points = y
+        self.lazor_pass_grid = z
+        
 
 def read_bff(file):
     f = open(file)
@@ -70,35 +76,6 @@ def in_grid(x, y):
         return True
     return False
 
-# 可以算多个points
-def cal_lazor2(points):
-    total_lazor_points = []
-    total_lazor_pass_grid = []
-    for point in points:
-        lazor_points = []
-        lazor_points.append(tuple(point))
-        lazor_pass_grid = []
-        x = point[0]
-        dx = point[2]
-        y = point[1]
-        dy = point[3]
-        while in_grid(x + dx, y + dy):
-            x += dx
-            y += dy
-            lazor_points.append((x, y, dx, dy))
-            # print([x, y, dx, dy])
-            if x % 2 == 1:
-                if in_grid(x, y + 1):
-                    lazor_pass_grid.append((x, y+ 1))
-                if in_grid(x, y - 1):
-                    lazor_pass_grid.append((x, y- 1))
-        total_lazor_points += lazor_points
-        total_lazor_pass_grid += lazor_pass_grid
-        print('total_lazor_points', total_lazor_points)
-        print('total_lazor_pass_grid', total_lazor_pass_grid)
-    
-    return total_lazor_points, total_lazor_pass_grid
-
 def cal_lazor(point):
     lazor_points = []
     lazor_points.append(tuple(point))
@@ -135,6 +112,7 @@ def cal_reflect_start(point):
 
 
 intersect_points = {}
+intersect_info = {}
 
 def check_solution(block_position_list, lazor_points, lazor_pass_grid):
     
@@ -159,60 +137,6 @@ def check_solution(block_position_list, lazor_points, lazor_pass_grid):
     return False
 
 # find = False
-
-# 解决多个start_points 
-
-def find_block_position2(blocks, index, start_points, block_position_list, lazor_points, lazor_pass_grid):
-
-    print('----------------------------')
-    print('start_points', start_points)
-    print('block_position_list', block_position_list)
-    print('lazor_points', lazor_points)
-    print('lazor_pass_grid', lazor_pass_grid)
-    print('----------------------------')
-
-    if check_solution(block_position_list, lazor_points , lazor_pass_grid):
-        print('block_position_list=======', block_position_list)
-        # return
-
-    if index >= len(blocks):
-        return
-    
-    '''
-    gird [[[1, 1, 'o'], [3, 1, 'o'], [5, 1, 'o']], [[1, 3, 'o'], [3, 3, 'o'], [5, 3, 'o']], [[1, 5, 'o'], [3, 5, 'o'], [5, 5, 'o']], [[1, 7, 'o'], [3, 7, 'o'], [5, 7, 'o']]]
-    blocks [['A', 3]]
-    start_points [[1, 5, 1, 1], [1, 6, 1, -1]]
-    intersect_points {(0, 5), (6, 5)}
-    blocks_list ['A', 'A', 'A']
-    '''
-
-    # all start_points 
-    # for start_point in start_points:
-    new_lazor_points, new_lazor_pass_grid = cal_lazor2(start_points)
-    
-    for i, lazor_point in enumerate(new_lazor_points):
-        block_position = []
-        if lazor_point[0] % 2 == 0:
-            block_position.append(lazor_point[0] + lazor_point[2])
-        else:
-            block_position.append(lazor_point[0])
-        if lazor_point[1] % 2 == 0:
-            block_position.append(lazor_point[1] + lazor_point[3])
-        else:
-            block_position.append(lazor_point[1])
-        
-        # continue
-        if not in_grid(block_position[0], block_position[1]):
-            continue
-        
-        block_position_list.append(block_position)
-        new_reflect_point = cal_reflect_start(lazor_point)
-        
-        find_block_position2(blocks, index+1, new_reflect_point, block_position_list, lazor_points + new_lazor_points[:i+1], lazor_pass_grid + new_lazor_pass_grid[:i+1])
-        # trackback
-        block_position_list.pop()
-
-
 
 # 只能解决一个start_point
 def find_block_position(blocks, index, start_point, block_position_list, lazor_points, lazor_pass_grid):
@@ -270,8 +194,9 @@ def find_solution(file):
     
     # read the file
     gird, blocks_type, start_points, intersect_points_1 = read_bff(file)
-    global intersect_points
+    global intersect_points, intersect_info
     intersect_points = intersect_points_1
+    intersect_info = {}
     # find permutations of blocks 
     blocks_list = get_blocks_list(blocks_type)
 
@@ -280,20 +205,10 @@ def find_solution(file):
     max_x = len(gird[0]) * 2
     max_y = len(gird) * 2
 
-    # print('blocks_list', blocks_list)
-    # permutation_blocks = set(itertools.permutations(blocks_list))
-    # print(permutation_blocks)
+    
+    for start_point in start_points:
+        find_block_position(blocks_list, 0, start_point, [], [], [])
 
-    # print(blocks_list)
-    # find all possible positions of blocks 
-    # for blocks in blocks_list:
-
-    # 
-    find_block_position(blocks_list, 0, tuple(start_points[0]), [], [], [])
-
-    # 多个start points
-    # find_block_position2(blocks_list, 0, start_points, [], [], [])
-    # then calculate if this position is a possible solution
 
 
 if __name__ == "__main__":
