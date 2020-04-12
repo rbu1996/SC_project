@@ -9,21 +9,21 @@
 #         a.append(5)
 #     print(i)
 
-while True:
-    print('===')
+# while True:
+#     print('===')
 
-'''
+
 import itertools
 
-blocks = ['A', 'B', 'B', 'C']
-grids = [(1, 1), (1, 2), \
+blocks = ['A', 'C']
+grids = {(1, 1), (1, 2), \
     (2, 1), (2, 2), \
-    (3, 1), (3, 2) ]
+    (3, 1), (3, 2) }
 
-perm_b = itertools.permutations(blocks, 4)
+perm_b = itertools.permutations(blocks, 2)
 # print(set(perm_b)) # 12
 
-comb_g = itertools.combinations(grids, 4)
+comb_g = itertools.combinations(grids, 2)
 # print(list(comb_g)) # 15
 # print(len(list(comb_g)))
 
@@ -35,7 +35,7 @@ for r in res:
     count += 1
 
 print(count) # 180
-'''
+
 
 '''
 (('B', 'A', 'C', 'B'), ((1, 1), (1, 2), (2, 1), (2, 2)))
