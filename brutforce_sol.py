@@ -1,6 +1,10 @@
 import itertools
 
+
 def read_bff(file):
+    '''
+    注释
+    '''
     f = open(file)
     line = f.readline()
 
@@ -56,14 +60,6 @@ def read_bff(file):
     print('intersect_points', intersect_points)
     print('max_x', max_x * 2)
     print('max_y', max_y - 1)
-
-
-    '''
-    gird [(1, 1), (3, 1), (5, 1), (1, 3)]
-    blocks ['B', 'C']
-    start_points [(1, 4, 1, 1], [1, 6, 1, -1)]
-    intersect_points {(0, 5), (6, 5)}
-    '''
 
     return grid, blocks, start_points, intersect_points, max_x * 2, max_y - 1
 
@@ -203,7 +199,7 @@ def pass_goal(lazor_points, copy_goal_points, reflect_point):
 def check_position(position, grid, start_points, goal_points):
     # position {(1, 1): 'B', (3, 1): 'B'}
     copy_goal_points = goal_points.copy()
-    reflect_point = start_points[0]
+    # reflect_point = start_points[0]
     print('===================')
     print('position', position)
     # print(start_points)
@@ -218,7 +214,7 @@ def check_position(position, grid, start_points, goal_points):
 
         # initialize 
         reflect_point = start_point
-        end_point = start_point
+        # end_point = start_point
         print('----------------------')
         # print('position', position)
         print('start_points ==', start_point)
@@ -227,9 +223,9 @@ def check_position(position, grid, start_points, goal_points):
         count = 0
         while True:
             count += 1
-            if count == 10:
-                print('22222222222222')
-                return 
+            # if count == 10:
+            #     print('22222222222222')
+            #     return 
             lazor_points, lazor_pass_grid = cal_lazor(reflect_point, grid)
             print('reflect_point', reflect_point)
             # print('lazor_points', lazor_points)
@@ -277,11 +273,25 @@ def check_position(position, grid, start_points, goal_points):
                 # 如果是'C' C碰到光线一个反射一个直的通过
                 # 反射的情况直接归到A里面计算
                 # 折射的情况还是直接射出去
+                # new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
+                # if new_start_point in start_points:
+                #     continue
                 if position[intersect_grid] == 'C':
+                    new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
+                    if new_start_point in start_points:
+                        continue
                     # C 有两种情况 1 一种是光线从射到外表面 --> 外表面反射 + 投射
                     #            2 光线射到内表面 --> 不反射 只投射
-                    # 情况1 
+
+                    # 反射
+                    reflect_point = cal_reflect_start(intersect_point)
+                    # calculate passed goal
+                    # 计算所有经过的goal
+                    pass_goal(lazor_points, copy_goal_points, reflect_point)
+                    print(position[intersect_grid], 'reflect')
+                    print(intersect_grid)
                     
+                    # 投射
                     # 直接通过的相当于从intersect_point + (dx dy)的位置增加一个新的光路
                     new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
                     pass_goal(lazor_points, copy_goal_points, new_start_point)
@@ -322,9 +332,9 @@ def find_solution(file):
     print(all_poss_posi)
     # cal_lazor(start_points[0], grid)
     count = 0
-    position = {(5, 3): 'A', (5, 5): 'C'}
-    check_position(position, grid, start_points, intersect_points)
-    '''
+    # position = {(5, 3): 'A', (5, 5): 'C'}
+    # check_position(position, grid, start_points, intersect_points)
+    
     for temp in all_poss_posi:
         # print(temp)
         position = {}
@@ -336,10 +346,11 @@ def find_solution(file):
         if check_position(position, grid, start_points, intersect_points):
             print('position', position)
             return
-        '''
+        
     print(count)
     # print(max_x, max_y)
     # position {(7, 3): 'A', (5, 9): 'A', (7, 5): 'A', (3, 9): 'A', (5, 3): 'A'}
 
 if __name__ == "__main__":
-    find_solution('mad_1.bff')
+    find_solution('easy.bff')
+    # {(1, 2): 'A', (3, 2): 'C'}
