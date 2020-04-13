@@ -1,6 +1,7 @@
 import itertools
 import numpy as np
 from PIL import Image
+import time
 
 
 class Block():
@@ -85,13 +86,6 @@ def read_bff(file):
 
         line = f.readline()
     f.close()
-    print('grid', grid)
-    # print('blocks', blocks)
-    # print('start_points', start_points)
-    # print('intersect_points', intersect_points)
-    # print('max_x', max_x * 2)
-    # print('max_y', max_y - 1)
-    # print('fixed_block', fixed_block)
     return grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
 
@@ -135,8 +129,6 @@ def cal_lazor(point, grid):
                 lazor_pass_grid.add((x + dx, y))
         x += dx
         y += dy
-    print('lazor_points', lazor_points)
-    print('lazor_pass_grid', lazor_pass_grid)
     return lazor_points, lazor_pass_grid
 
 
@@ -196,14 +188,13 @@ def check_position(position, grid, start_points, goal_points):
         count = 0
         while True:
             lazor_points, lazor_pass_grid = cal_lazor(start_point, grid)
-            print('start_point', start_point)
             intersect_grids = lazor_pass_grid & set(position.keys())
-            print('intersect_grid', intersect_grids)
             if len(intersect_grids) == 0:
                 pass_goal(lazor_points, copy_goal_points, (-1, -1, -1, -1))
                 break
             else:
-                intersect_point = get_intersect_point(intersect_grids, lazor_points, start_point)
+                intersect_point = get_intersect_point(
+                    intersect_grids, lazor_points, start_point)
                 intersect_grid = get_intersect_grid(intersect_point)
                 new_reflect_point = cal_reflect_start(intersect_point)
                 if intersect_point[:2] == start_point[:2]:
@@ -212,12 +203,12 @@ def check_position(position, grid, start_points, goal_points):
                     nei_grid = (nei_x, nei_y)
 
                     if nei_grid in position.keys():
-                        print(position[nei_grid].block_type)
                         pos = position[nei_grid]
                         if pos.lazor_in_block(pos.block_type):
                             new_temp = (
                                 new_reflect_point[0] + new_reflect_point[2], new_reflect_point[1] + new_reflect_point[3])
-                            copy_start_points.append(new_temp + new_reflect_point[2:])
+                            copy_start_points.append(
+                                new_temp + new_reflect_point[2:])
                         else:
                             break
 
@@ -236,49 +227,27 @@ max_x = 0
 max_y = 0
 
 
-def output_img(grid_map, ans_position, max_x, max_y, blockSize, frameSize):
-    # grid_map = [[[1, 1, 'o'], [3, 1, 'B'], [5, 1, 'o']],
-    #             [[1, 3, 'o'], [3, 3, 'o'], [5, 3, 'o']],
-    #             [[1, 5, 'o'], [3, 5, 'o'], [5, 5, 'o']]]
-
-    # position = {(1, 1): 'A', (5, 1): 'A', (1, 5): 'A', (3, 5): 'C'}
-
-    ans_list = []
-    # max_x = 6
-
-    # max_y = 6
-    # blockSize = 50
-    # frameSize = 5
+def get_map(grid_map, sol_position, max_x, max_y):
+    sol_list = []
     x = int(max_x / 2)
     y = int(max_y / 2)
-    # print(x, y)
 
     for i, row in enumerate(grid_map):
-        # print(i, row)
         for j, column in enumerate(row):
-            # print(j, column)
             map_key = (column[0], column[1])
-            map_value = column[2]
-            # print('map_key', map_key)
-            # print('map_value', map_value)
-            for key, values in ans_position.items():
-                # print('key', key)
-                # print('values', values)
+            for key, values in sol_position.items():
                 if key == map_key:
-                    # column.pop()
-                    # column.append(values)
                     column[2] = values
-            ans_list.append(column[2])
-            # print('col',column[2])
-            # print(i)
-            # ans_map[i].append(column[2])
+            sol_list.append(column[2])
 
-    # print(grid_map)
-    # print(position)
-    # print(ans_list)
+    sol_map = np.array(sol_list).reshape(y, x)
+    return sol_map
 
-    ans_map = np.array(ans_list).reshape(x, y)
-    # print(ans_map)
+
+def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
+
+    x = int(max_x / 2)
+    y = int(max_y / 2)
 
     colors = {'o': (192, 192, 192),
               'x': (105, 105, 105),
@@ -289,63 +258,63 @@ def output_img(grid_map, ans_position, max_x, max_y, blockSize, frameSize):
               }
     dim_x = x * (blockSize + frameSize) + frameSize
     dim_y = y * (blockSize + frameSize) + frameSize
-    # print(dim_x, dim_y)
-
     img = Image.new("RGB", (dim_x, dim_y), color=colors['frame'])
-    '''
-    for i in range(ans_map):
-        for j in range(ans_map):
-            img.putpixel((x + i, y + j), colors[])
-            print(i,j)
-    '''
-
-    for i, ans_row in enumerate(ans_map):
-        # print(i, ans_row)
-        for j, ans in enumerate(ans_row):
-            # print('ans', ans)
-            # print(colors[ans])
-            color = colors[ans]
-            for x in range(blockSize):
-                for y in range(blockSize):
-                    img.putpixel((frameSize + (frameSize + blockSize) * j + x, frameSize + (frameSize + blockSize) * i + y), color)
+    for n, sol_row in enumerate(sol_map):
+        for m, sol in enumerate(sol_row):
+            color = colors[sol]
+            for i in range(blockSize):
+                for j in range(blockSize):
+                    pxl_x = frameSize + (frameSize + blockSize) * m + i
+                    pxl_y = frameSize + (frameSize + blockSize) * n + j
+                    img.putpixel((pxl_x, pxl_y), color)
 
     img.show()
-    img.save('ans_map.png')
+    img.save('%s_sol.png' % filename)
 
+
+def output_txt(filename, sol_map):
+    with open('%s_sol.txt' % filename, 'w') as f:
+        for row in sol_map:
+            for item in row:
+                f.write('%s ' % item)
+            f.write('\n')
 
 def find_solution(file):
     global max_x, max_y
     # read the file
     grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x, max_y = read_bff(
         file)
-    print(grid_map)
-    print(grid)
-    print(blocks)
-    print(start_points)
-    print(intersect_points)
-    print(fixed_block)
-    print(max_x, max_y)
-    # out_imag()
+    if ".bff" in file:
+        filename = file.split(".bff")[0]
+
     # find all possible combination between blocks and its position in grid
     all_poss_posi = find_all_positions(blocks, grid)
-    count = 0
 
     for temp in all_poss_posi:
         block_position = {}
-        ans_position = {}
+        sol_position = {}
         for i, index in enumerate(temp[1]):
             block_position[index] = Block(temp[0][i])
         position = block_position.copy()
-        # print('position', position)
         position.update(fixed_block)
         if check_position(position, grid, start_points, intersect_points):
             for index, clas in block_position.items():
-                print(index, clas.block_type)
-                ans_position[index] = clas.block_type
-            # output_img(grid_map, ans_position, max_x, max_y, blockSize=50, frameSize=5)
+                # print(index, clas.block_type)
+                sol_position[index] = clas.block_type
+
+            sol_map = get_map(grid_map, sol_position, max_x, max_y)
+            # output image
+            output_img(filename, sol_map, max_x, max_y,
+                       blockSize=50, frameSize=5)
+            # output txt
+            output_txt(filename, sol_map)
+
             return
 
 
 if __name__ == "__main__":
-    find_solution('easy.bff')
+    start_time = time.time()
+    find_solution('dark_1.bff')
+    print("--- %s seconds ---" % (time.time() - start_time))
+
     # {(7, 3): 'A', (1, 5): 'A', (5, 1): 'C'}
