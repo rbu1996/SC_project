@@ -75,7 +75,9 @@ def read_bff(file):
             while line != 'GRID STOP\n':
                 temp = line.split()
                 max_x = max(max_x, len(temp))
+                row = []
                 for x, block in enumerate(temp):
+                    row.append([(x + 1) * 2 - 1, y, block])
                     if block == 'o':
                         grid.add(((x + 1) * 2 - 1, y))  # All the free grid points
                     # fixed block
@@ -296,7 +298,7 @@ max_y = 0
 def find_solution(file):
     global max_x, max_y
     # read the file
-    grid, blocks, start_points, intersect_points, fixed_block, max_x, max_y = read_bff(
+    grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x, max_y = read_bff(
         file)
 
     # find all possible combination between blocks and its position in grid
