@@ -123,16 +123,6 @@ def read_bff(file):
     return grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
 
-# def get_blocks_list(blocks):
-#     block_list = []
-#     for block in blocks:
-#         for i in range(block[1]):
-#             block_list.append(block[0])
-#     return block_list
-#
-# This is not used anywhere else. Should we delete it?
-
-
 def find_all_positions(blocks, grid):
     """
     List out all the blocks and grid points.
@@ -145,8 +135,6 @@ def find_all_positions(blocks, grid):
     **output**
         res: *intertools.prouduct*
             block types + grid
-
-
     """
 
     perm_blocks = itertools.permutations(blocks, len(blocks))
@@ -171,7 +159,20 @@ def in_grid(x, y):
 
 
 def cal_lazor(point, grid):
-    # Grid blocks which the lazer(s) pass
+    """
+    Grid blocks which the lazer(s) pass
+    **parameters**
+        point: *tuple*
+            point and the lazor direction
+        grid: *set*
+            locations of available grid boxes
+    **output**
+        lazor_points: *list, tuple*
+            Points the lazer passes by and the lazor direction
+        lazor_pass_grid: *set, tuple*
+            Grids the lazor passes by
+    """
+
     lazor_points = []
     lazor_pass_grid = set()
     x = point[0]
@@ -194,7 +195,18 @@ def cal_lazor(point, grid):
 
 
 def get_intersect_point(intersect_grid, lazor_points, start_point):
+    """
+    Grid blocks which the lazer(s) pass
+    **parameters**
+        x, y: *int*
+            location of a point
+    **output**
+        true/false
+CHANGEEEE
+    """
+
     possible_intersect_point = set()
+
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
     for int_grid in intersect_grid:
@@ -207,6 +219,7 @@ def get_intersect_point(intersect_grid, lazor_points, start_point):
 
 
 def get_intersect_grid(intersect_point):
+
     grid = (0, 0)
     x = intersect_point[0]
     y = intersect_point[1]
@@ -233,6 +246,15 @@ def cal_reflect_start(point):  # start point
 
 
 def pass_goal(lazor_points, copy_goal_points, reflect_point):
+    """
+    Grid blocks which the lazer(s) pass
+    **parameters**
+        x, y: *int*
+            location of a point
+    **output**
+        true/false
+CHANGEEEE
+    """
     # Remove the goal when lazor passes it
     for lazor_point in lazor_points:
         point = lazor_point[:2]
@@ -243,6 +265,16 @@ def pass_goal(lazor_points, copy_goal_points, reflect_point):
 
 
 def check_position(position, grid, start_points, goal_points):
+    """
+    Grid blocks which the lazer(s) pass
+    **parameters**
+        x, y: *int*
+            location of a point
+    **output**
+        true/false
+CHANGEEEE
+    """
+
     copy_goal_points = goal_points.copy()
     copy_start_points = start_points.copy()
 
@@ -296,6 +328,16 @@ max_y = 0
 
 
 def find_solution(file):
+
+    """
+    Grid blocks which the lazer(s) pass
+    **parameters**
+        x, y: *int*
+            location of a point
+    **output**
+        true/false
+CHANGEEEE
+    """
     global max_x, max_y
     # read the file
     grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x, max_y = read_bff(
