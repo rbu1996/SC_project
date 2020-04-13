@@ -88,11 +88,13 @@ def find_all_positions(blocks, grid):
     comb_grid = itertools.combinations(grid, len(blocks))
     temp = [list(set(perm_blocks)), list(comb_grid)]
     res = itertools.product(*temp)
-    print(list(res))
     return res
 
 
 def in_grid(x, y):
+    '''
+    verify if the point is inside the grid
+    '''
     if x >= 0 and x <= max_x and y >= 0 and y <= max_y:
         return True
     return False
@@ -110,6 +112,10 @@ def in_grid(x, y):
 
 
 def cal_lazor(point, grid):
+    '''
+    The grid block which the lazer passes
+
+    '''
     # print('point', point)
     # print('grid', grid)
     lazor_points = []
@@ -140,6 +146,7 @@ def cal_lazor(point, grid):
 
 
 def calculate_dis(a, b):
+
     dis = 0
     for i in range(2):
         dis += (a[i] - b[i]) ** 2
@@ -147,6 +154,7 @@ def calculate_dis(a, b):
 
 
 def find_closest_position(reflect_point, intersect):
+    
     closest_position = list(intersect)[0]
     min_dis = calculate_dis(closest_position, reflect_point)
     for pos in list(intersect):
@@ -156,6 +164,7 @@ def find_closest_position(reflect_point, intersect):
 
 
 def get_intersect_point(intersect_grid, lazor_points, reflect_point):
+
     possible_intersect_point = set()
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
