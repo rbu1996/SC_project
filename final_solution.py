@@ -243,5 +243,3 @@ def find_solution(file):
 if __name__ == "__main__":
     find_solution('mad_1.bff')
     # {(7, 3): 'A', (1, 5): 'A', (5, 1): 'C'}
-    
-    
