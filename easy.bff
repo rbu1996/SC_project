@@ -1,17 +1,20 @@
 GRID START
 o o o o
-x x o x
-o x o x
-x x o o
-x x o x
+o o o o
+o o o o
+o o o o
+o o o o
+o o o o
 GRID STOP
 
 
-A 3
+C 2
 
-L 3 4 1 1
-L 3 6 1 -1
+L 7 6 -1 -1
+L 8 11 -1 -1
 
-P 4 3
-P 4 7
+P 1 8
+P 1 4
+P 2 1
+P 6 1
 

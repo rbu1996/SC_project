@@ -1,7 +1,28 @@
 import itertools
 
-# class Block:
-#     def block_A():
+class Block():
+    def __init__(self, block_type):
+        self.block_type = block_type
+        
+    def lazor_in_block(self, nei_block):
+        if nei_block == 'A' or nei_block == 'B':
+            return False
+        return True
+    
+    def block_reflect_block(self, lazor_points, copy_goal_points, new_reflect_point, intersect_point, start_points):
+        pass_goal(lazor_points, copy_goal_points, new_reflect_point)
+
+        if self.block_type == 'A':
+            return new_reflect_point
+        elif self.block_type == 'B':
+            return (-1, -1, -1, -1)
+        else:
+            new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
+            pass_goal(lazor_points, copy_goal_points, new_start_point)
+            if new_start_point not in start_points:
+                start_points.append(new_start_point)
+            return new_reflect_point
+
 
 
 def read_bff(file):
@@ -212,7 +233,7 @@ def check_position(position, grid, start_points, goal_points):
 
         count = 0
         while True:
-            count += 1
+            # count += 1
             # if count == 10:
             #     print('22222222222222')
             #     return 
@@ -270,11 +291,12 @@ def check_position(position, grid, start_points, goal_points):
                 # 在所有的可能的反射面里面求出距离光点最近的 新的反射点
                 # 新的反射点 update start_point
                 # 如果是 A
+                pass_goal(lazor_points, copy_goal_points, new_reflect_point)
                 if position[intersect_grid] == 'A':
                     # new_reflect_point = cal_reflect_start(intersect_point)
                     # calculate passed goal
                     # 计算所有经过的goal
-                    pass_goal(lazor_points, copy_goal_points, new_reflect_point)
+                    # pass_goal(lazor_points, copy_goal_points, new_reflect_point)
                     start_point = new_reflect_point
                     print(position[intersect_grid], 'reflect')
                     print(intersect_grid)
@@ -285,8 +307,8 @@ def check_position(position, grid, start_points, goal_points):
                 # 后续结果是没了 没光了 直接跳出循环 （A是反射）
                 if position[intersect_grid] == 'B':
                     # start_point = cal_reflect_start(intersect_point)
-                    pass_goal(lazor_points, copy_goal_points, new_reflect_point)
-                    start_point = new_reflect_point
+                    # pass_goal(lazor_points, copy_goal_points, new_reflect_point)
+                    # start_point = new_reflect_point
                     print(position[intersect_grid])
                     print(intersect_grid)
                     break
@@ -300,17 +322,18 @@ def check_position(position, grid, start_points, goal_points):
                 if position[intersect_grid] == 'C':
                     new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
                     # 减少重复计算 如果new在start_point里面已经存在了 直接continue
-                    if new_start_point in copy_start_points:
-                        continue
+                    # if new_start_point in copy_start_points:
+                    #     continue
                     # C 有两种情况 1 一种是光线从射到外表面 --> 外表面反射 + 投射
                     #            2 光线射到内表面 --> 不反射 只投射
 
                     # 反射
-                    start_point = new_reflect_point
+                    # start_point = new_reflect_point
                     print('new_reflect_point', new_reflect_point)
                     # calculate passed goal
                     # 计算所有经过的goal
-                    pass_goal(lazor_points, copy_goal_points, start_point)
+                    # pass_goal(lazor_points, copy_goal_points, new_reflect_point)
+                    start_point = new_reflect_point
                     # print(position[intersect_grid], 'reflect')
                     # print(intersect_grid)
                     
@@ -318,7 +341,8 @@ def check_position(position, grid, start_points, goal_points):
                     # 直接通过的相当于从intersect_point + (dx dy)的位置增加一个新的光路
                     # new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
                     pass_goal(lazor_points, copy_goal_points, new_start_point)
-                    copy_start_points.append(new_start_point)
+                    if new_start_point not in copy_start_points:
+                        copy_start_points.append(new_start_point)
                     # print(position[intersect_grid], '投射')
                     # print(intersect_grid)
                     
@@ -355,11 +379,11 @@ def find_solution(file):
     # print(all_poss_posi)
     # cal_lazor(start_points[0], grid)
     count = 0
-    # position = {(3, 5): 'C', (5, 5): 'A', (3, 3): 'A'}
+    # position = {(3, 3): 'C', (5, 3): 'C'}
     # check_position(position, grid, start_points, intersect_points)
     
     for temp in all_poss_posi:
-        # print(temp)
+        print(temp)
         block_position = {}
         for i, index in enumerate(temp[1]):
             block_position[index] = temp[0][i]
@@ -380,5 +404,5 @@ def find_solution(file):
     # position {(7, 3): 'A', (5, 9): 'A', (7, 5): 'A', (3, 9): 'A', (5, 3): 'A'}
 
 if __name__ == "__main__":
-    find_solution('tiny_5.bff')
-    # {(1, 2): 'A', (3, 2): 'C'}
+    find_solution('mad_1.bff')
+    # {(3, 3): 'A', (5, 5): 'C', (1, 5): 'A'}

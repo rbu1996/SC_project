@@ -12,9 +12,31 @@
 # while True:
 #     print('===')
 
-dir = {1: 'a', 2: 'b'}
-dir2 = {5:'d'}
-print(dict(**dir, **dir2))
+# dir = {1: 'a', 2: 'b'}
+# dir2 = {5:'d'}
+# print(dict(**dir, **dir2))
+
+# class test():
+#     def __init__(self, index):
+#         self.index = index
+        
+#     def p(self, a, b):
+#         print(self.index)
+#         if self.index == 5:
+#             print('===')
+#         print(a)
+#         print(b)
+#         print(hello(100))
+
+# def hello(i):
+#     return i
+
+# tt = test(1)
+# tt.p(2, 3)
+t = (1,2,3,4)
+print(t[1:])
+
+
 
 '''
 import itertools

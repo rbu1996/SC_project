@@ -178,7 +178,7 @@ intersect_point = get_intersect_point(intersect_grid, lazor_points)
 reflect_point = cal_reflect_start(intersect_point)
 
 print(intersect_point)
-print(intersect_point)
+# print(intersect_point)
 print(reflect_point)
 
 # lazor_points = [(4, 5, -1, 1), (3, 6, -1, 1)]
