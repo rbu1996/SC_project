@@ -30,6 +30,15 @@ class Block():
             return True
 
 
+'''
+YS:
+我加了个 grid_map最为return, 应该是3Dlist, like this:
+    [[[1, 1, 'x'], [3, 1, 'o'], [5, 1, 'o']], 
+    [[1, 3, 'o'], [3, 3, 'o'], [5, 3, 'o']], 
+    [[1, 5, 'o'], [3, 5, 'o'], [5, 5, 'x']]]
+'''
+
+
 def read_bff(file):
     f = open(file)
     line = f.readline()
@@ -86,6 +95,8 @@ def read_bff(file):
 
         line = f.readline()
     f.close()
+    print(grid_map)
+    print(grid)
     return grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
 
@@ -185,7 +196,6 @@ def check_position(position, grid, start_points, goal_points):
 
     # 用end_lazor 来表示光线的最末尾。如果末尾超过了grid的范围，那这个光线的路程结束了
     for start_point in copy_start_points:
-        count = 0
         while True:
             lazor_points, lazor_pass_grid = cal_lazor(start_point, grid)
             intersect_grids = lazor_pass_grid & set(position.keys())
@@ -227,6 +237,16 @@ max_x = 0
 max_y = 0
 
 
+'''
+YS:
+this function gets the map of the solution，like this:
+[['x' 'o' 'o']
+ ['o' 'B' 'o']
+ ['B' 'B' 'x']]
+the output sol_map is a 2D list
+'''
+
+
 def get_map(grid_map, sol_position, max_x, max_y):
     sol_list = []
     x = int(max_x / 2)
@@ -242,6 +262,12 @@ def get_map(grid_map, sol_position, max_x, max_y):
 
     sol_map = np.array(sol_list).reshape(y, x)
     return sol_map
+
+
+'''
+YS:
+this function outputs an image of the solution
+'''
 
 
 def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
@@ -272,6 +298,12 @@ def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
     img.save('%s_sol.png' % filename)
 
 
+'''
+YS:
+this function outputs a txt file of the solution
+'''
+
+
 def output_txt(filename, sol_map):
     with open('%s_sol.txt' % filename, 'w') as f:
         for row in sol_map:
@@ -279,7 +311,8 @@ def output_txt(filename, sol_map):
                 f.write('%s ' % item)
             f.write('\n')
 
-def find_solution(file):
+
+def find_solution(file, output_image, output_file):
     global max_x, max_y
     # read the file
     grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x, max_y = read_bff(
@@ -304,17 +337,19 @@ def find_solution(file):
 
             sol_map = get_map(grid_map, sol_position, max_x, max_y)
             # output image
-            output_img(filename, sol_map, max_x, max_y,
-                       blockSize=50, frameSize=5)
+            if output_image is True:
+                output_img(filename, sol_map, max_x, max_y,
+                           blockSize=50, frameSize=5)
             # output txt
-            output_txt(filename, sol_map)
+            if output_file is True:
+                output_txt(filename, sol_map)
 
             return
 
 
 if __name__ == "__main__":
     start_time = time.time()
-    find_solution('dark_1.bff')
+    find_solution('dark_1.bff', output_image=False, output_file=True)
     print("--- %s seconds ---" % (time.time() - start_time))
 
     # {(7, 3): 'A', (1, 5): 'A', (5, 1): 'C'}
