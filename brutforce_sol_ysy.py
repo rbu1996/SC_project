@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+# <<<<<<< HEAD
 import itertools
 
 
@@ -192,7 +192,7 @@ def get_intersect_point(intersect_grid, lazor_points, reflect_point):
 
 def get_intersect_grid(intersect_point):
     '''
-    comment
+    Center of the grid block the lazer intersects
     '''
     grid = (0, 0)
     x = intersect_point[0]
@@ -217,10 +217,12 @@ def cal_reflect_start(point):
         # dy = point[3] * -1
     return (point[0], point[1], dx, dy)
 
-# 计算光路上是否有通过goal的，如果有，把goal里面的remove
-
 
 def pass_goal(lazor_points, copy_goal_points, reflect_point):
+    '''
+    Remove the goal if it exits on the way of lazer
+    '''
+
     for lazor_point in lazor_points:
         point = (lazor_point[0], lazor_point[1])
         if point in copy_goal_points:
@@ -247,7 +249,7 @@ def check_position(position, grid, start_points, goal_points):
         # 这样相当于又多一个光线出发。多一个光线！
 
         # initialize
-        reflect_point = start_point
+        reflect_point = start_point # assign the end reflect point as the new start point
         # end_point = start_point
         print('----------------------')
         # print('position', position)
@@ -348,7 +350,7 @@ def check_position(position, grid, start_points, goal_points):
     #     print('222222222222222222222222')
     #     return True
     if len(copy_goal_points) == 0:
-        print('成功了！')
+        print('Solved!')
         return True
     return False
 
