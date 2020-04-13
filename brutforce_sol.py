@@ -1,5 +1,9 @@
 import itertools
 
+# class Block:
+#     def block_A():
+
+
 def read_bff(file):
     '''
     注释
@@ -11,6 +15,7 @@ def read_bff(file):
     blocks = []
     start_points = []
     intersect_points = set()
+    fixed_block = {}
     max_x = 0
     max_y = 0
 
@@ -26,6 +31,9 @@ def read_bff(file):
                 for x, block in enumerate(temp):
                     if block == 'o':
                         grid.add(((x + 1) * 2 - 1, y))
+                    # fixed block 
+                    if block == 'A' or 'B' or 'C':
+
                     # print(row)
                 y += 2
                 line = f.readline()
@@ -131,36 +139,17 @@ def calculate_dis(a, b):
         dis += (a[i] - b[i]) ** 2
     return dis
 
-def find_closest_position(reflect_point, intersect):
-    closest_position = list(intersect)[0]
-    min_dis = calculate_dis(closest_position, reflect_point)
-    for pos in list(intersect):
-        if min_dis > calculate_dis(pos, reflect_point):
-            closest_position = pos
-    return closest_position
-
-def get_intersect_point(intersect_grid, lazor_points, reflect_point):
+def get_intersect_point(intersect_grid, lazor_points, start_point):
     possible_intersect_point = set()
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
     for int_grid in intersect_grid:
         for i in range(4):
-            possible_intersect_point.add((int_grid[0] + dx[i], int_grid[1] + dy[i], reflect_point[2], reflect_point[3]))
+            possible_intersect_point.add((int_grid[0] + dx[i], int_grid[1] + dy[i], start_point[2], start_point[3]))
     for point in lazor_points:
         if point in possible_intersect_point:
             return point
-    '''
-    # print('reflect_point', reflect_point)
-    intersect_point = set()
-    intersect_grid_list = list(intersect_grid)
-    # print('==', intersect_grid_list)
-    dx = [1, -1, 0, 0]
-    dy = [0, 0, 1, -1]
-    for int_grid in intersect_grid_list:
-        for i in range(4):
-            intersect_point.add((int_grid[0] + dx[i], int_grid[1] + dy[i], reflect_point[2], reflect_point[3]))
-    return intersect_point
-    '''
+    
 def get_intersect_grid(intersect_point):
     grid = (0, 0)
     x = intersect_point[0]
@@ -249,6 +238,7 @@ def check_position(position, grid, start_points, goal_points):
                 intersect_point = get_intersect_point(intersect_grids, lazor_points, start_point)
                 intersect_grid = get_intersect_grid(intersect_point)
                 new_reflect_point = cal_reflect_start(intersect_point)
+                
                 # 无限循环的起因
                 # start_point 和 interest 重合。光线在两个block之间来回反射 导致了无穷循环
                 if (intersect_point[0], intersect_point[1]) == (start_point[0], start_point[1]):
