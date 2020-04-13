@@ -12,7 +12,11 @@
 # while True:
 #     print('===')
 
+dir = {1: 'a', 2: 'b'}
+dir2 = {5:'d'}
+print(dict(**dir, **dir2))
 
+'''
 import itertools
 
 blocks = ['A', 'C']
@@ -35,6 +39,7 @@ for r in res:
     count += 1
 
 print(count) # 180
+'''
 
 
 '''
