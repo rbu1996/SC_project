@@ -1,22 +1,26 @@
 import itertools
 
+# class Block:
+#     def block_A():
+
 
 def read_bff(file):
     '''
-    注释
+    Define the game panel into a grid assignment. Define the length of the grid in x and y direction (size).
+    Find out the type and number of blocks. Laser start points and their directions.
     '''
     f = open(file)
     line = f.readline()
-
     grid = set()
     blocks = []
     start_points = []
     intersect_points = set()
+    fixed_block = {}
     max_x = 0
     max_y = 0
 
     while line:
-        # grid
+        # assign grid
         if line == 'GRID START\n':
             line = f.readline()
             y = 1
@@ -27,9 +31,17 @@ def read_bff(file):
                 for x, block in enumerate(temp):
                     if block == 'o':
                         grid.add(((x + 1) * 2 - 1, y))
+<<<<<<< HEAD
+                        # print(row)
+=======
+                    # fixed block 
+                    if block == 'A' or block == 'B' or block == 'C':
+                        fixed_block[((x + 1) * 2 - 1, y)] = block
                     # print(row)
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
                 y += 2
                 line = f.readline()
+                # print(line)
                 # grid.append(row)
             max_y = y
 
@@ -56,29 +68,39 @@ def read_bff(file):
         line = f.readline()
     f.close()
     print('grid', grid)
+
     print('blocks', blocks)
-    print('start_points', start_points)
+    print('start points and directions', start_points)
     print('intersect_points', intersect_points)
     print('max_x', max_x * 2)
     print('max_y', max_y - 1)
+    print('fixed_block', fixed_block)
 
-    return grid, blocks, start_points, intersect_points, max_x * 2, max_y - 1
+    return grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
 
+'''
+DELETE THIS PART
 def get_blocks_list(blocks):
+    
     block_list = []
     for block in blocks:
         for i in range(block[1]):
             block_list.append(block[0])
-    # print(block_list)
-    return block_list
+            print(block_list)
+    # return block_list
+'''
 
 
 def find_all_positions(blocks, grid):
+    '''
+    List out all the blocks and grid points
+    '''
     perm_blocks = itertools.permutations(blocks, len(blocks))
     comb_grid = itertools.combinations(grid, len(blocks))
     temp = [list(set(perm_blocks)), list(comb_grid)]
     res = itertools.product(*temp)
+    print(list(res))
     return res
 
 
@@ -120,11 +142,10 @@ def cal_lazor(point, grid):
                 lazor_pass_grid.add((x + dx, y))
         x += dx
         y += dy
-    print('lazor_points', lazor_points)
-    print('lazor_pass_grid', lazor_pass_grid)
+    # print('lazor_points', lazor_points)
+    # print('lazor_pass_grid', lazor_pass_grid)
     '''
-    lazor_points [(5, 0, -1, 1), (4, 1, -1, 1), (3, 2, -1, 1),
-                   (2, 3, -1, 1), (1, 4, -1, 1), (0, 5, -1, 1)]
+    lazor_points [(5, 0, -1, 1), (4, 1, -1, 1), (3, 2, -1, 1), (2, 3, -1, 1), (1, 4, -1, 1), (0, 5, -1, 1)]
     lazor_pass_grid {(5, 1), (3, 1), (3, 3), (1, 3)}
     '''
     return lazor_points, lazor_pass_grid
@@ -136,6 +157,7 @@ def calculate_dis(a, b):
         dis += (a[i] - b[i]) ** 2
     return dis
 
+<<<<<<< HEAD
 
 def find_closest_position(reflect_point, intersect):
     closest_position = list(intersect)[0]
@@ -147,18 +169,19 @@ def find_closest_position(reflect_point, intersect):
 
 
 def get_intersect_point(intersect_grid, lazor_points, reflect_point):
+=======
+def get_intersect_point(intersect_grid, lazor_points, start_point):
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
     possible_intersect_point = set()
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
     for int_grid in intersect_grid:
-        print('int_grid', int_grid)
         for i in range(4):
+<<<<<<< HEAD
             possible_intersect_point.add(
                 (int_grid[0] + dx[i], int_grid[1] + dy[i], reflect_point[2], reflect_point[3]))
-        print('possible_intersect_point', possible_intersect_point)
     for point in lazor_points:
         if point in possible_intersect_point:
-            print('point', point)
             return point
     '''
     # print('reflect_point', reflect_point)
@@ -169,12 +192,18 @@ def get_intersect_point(intersect_grid, lazor_points, reflect_point):
     dy = [0, 0, 1, -1]
     for int_grid in intersect_grid_list:
         for i in range(4):
-            intersect_point.add(
-                (int_grid[0] + dx[i], int_grid[1] + dy[i], reflect_point[2], reflect_point[3]))
+            intersect_point.add((int_grid[0] + dx[i], int_grid[1] + dy[i], reflect_point[2], reflect_point[3]))
     return intersect_point
     '''
 
 
+=======
+            possible_intersect_point.add((int_grid[0] + dx[i], int_grid[1] + dy[i], start_point[2], start_point[3]))
+    for point in lazor_points:
+        if point in possible_intersect_point:
+            return point
+    
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
 def get_intersect_grid(intersect_point):
     grid = (0, 0)
     x = intersect_point[0]
@@ -185,7 +214,6 @@ def get_intersect_grid(intersect_point):
         grid = (x, y + dy)
     if x % 2 == 0:
         grid = (x + dx, y)
-    print('grid', grid)
     return grid
 
 
@@ -206,12 +234,9 @@ def cal_reflect_start(point):
 def pass_goal(lazor_points, copy_goal_points, reflect_point):
     for lazor_point in lazor_points:
         point = (lazor_point[0], lazor_point[1])
-        print('pass_goal point', point)
         if point in copy_goal_points:
             copy_goal_points.remove(point)
-            print('remove point')
         if point == (reflect_point[0], reflect_point[1]):
-            print('break')
             break
 
 
@@ -219,46 +244,52 @@ def pass_goal(lazor_points, copy_goal_points, reflect_point):
 def check_position(position, grid, start_points, goal_points):
     # position {(1, 1): 'B', (3, 1): 'B'}
     copy_goal_points = goal_points.copy()
+    copy_start_points = start_points.copy()
     # reflect_point = start_points[0]
     print('===================')
     print('position', position)
-    
-    # start_points = [(2, 7, 1, -1)]
     # print(start_points)
     # print(goal_points)
     # print('----------------------')
 
     # 用end_lazor 来表示光线的最末尾。如果末尾超过了grid的范围，那这个光线的路程结束了
-    print('start_points', start_points)
-    # start_points.pop()
-    # print('start_poinst remove', start_points)
-    for start_point in start_points:
+    for start_point in copy_start_points: # 这里要做deep copy
+
         # python中的数组可以动态append。如果是透明块，可以直接把新产生的光线append到start_pointz
         # 这样相当于又多一个光线出发。多一个光线！
 
+<<<<<<< HEAD
         # initialize
         reflect_point = start_point
+=======
+        # initialize 
+        # reflect_point = start_point
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
         # end_point = start_point
         print('----------------------')
         # print('position', position)
-        print('start_point ==', start_point)
+        print('start_points ==', start_point)
         print()
 
         count = 0
-        
         while True:
             count += 1
-            print('count', count)
             # if count == 10:
             #     print('22222222222222')
+<<<<<<< HEAD
             #     return
             lazor_points, lazor_pass_grid = cal_lazor(reflect_point, grid)
             print('reflect_point', reflect_point)
+=======
+            #     return 
+            lazor_points, lazor_pass_grid = cal_lazor(start_point, grid)
+            print('start_point', start_point)
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
             # print('lazor_points', lazor_points)
             # print('lazor_pass_grid', lazor_pass_grid)
             # lazor走过的光路和预先设定的position的重合位置
             intersect_grids = lazor_pass_grid & set(position.keys())
-            print('intersect_grids', intersect_grids)
+            print('intersect_grid', intersect_grids)
             # 如果没有任何重合，那这个光路不用继续计算了。没有任何改变 直的通向结束
             if len(intersect_grids) == 0:
                 # 算一下是否有通过goal
@@ -268,33 +299,65 @@ def check_position(position, grid, start_points, goal_points):
             # if several blocks are in the same lazor line, only consider the closest one
             # 如果有重合，只需要计算离光点最近的面的反射
             else:
-                     # 在这里判断intersect_grid的类型
+                # 在这里判断intersect_grid的类型
                 # 如果是 'A' 只有反射：
-                # find the position that is cloest to reflect_point
+                # find the position that is cloest to start_point
                 # 通过之前求出来的在光路上的grid求出所有可能的反射面 （就是grid的上下左右四个面)
+<<<<<<< HEAD
                 intersect_point = get_intersect_point(
                     intersect_grids, lazor_points, reflect_point)
+=======
+                intersect_point = get_intersect_point(intersect_grids, lazor_points, start_point)
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
                 intersect_grid = get_intersect_grid(intersect_point)
-                # 在所有的可能的反射面里面求出距离光点最近的 新的反射点
-                # 新的反射点 update reflect_point
-                # 如果是 A
+                new_reflect_point = cal_reflect_start(intersect_point)
+                
+                # 无限循环的起因
+                # start_point 和 interest 重合。光线在两个block之间来回反射 导致了无穷循环
+                if (intersect_point[0], intersect_point[1]) == (start_point[0], start_point[1]):
+                    # print(a)
+                    # 找到夹着start point的两个block
+                    # dx = intersect_grid[0] - intersect_point[0]
+                    # dy = intersect_grid[1] - intersect_point[1]
+                    temp_grid = (intersect_point[0] * 2 - intersect_grid[0] , intersect_point[1] * 2 - intersect_grid[1])
+                    # 如果temp_grid上面没有块 正常情况 不会死循环
+                    # 如果temp_grid上面有block 分情况讨论
+                    if temp_grid in position.keys():
+                        # 如果grid上是A B
+                        if position[temp_grid] == 'A' or position[temp_grid] == 'B':
+                            # 光线被卡死了 光线结束了
+                            break
+                        # 如果grid上面是C
+                        if position[temp_grid] == 'C':
+                            # 只需要把投射光线放到start_points里面 然后结束
+                            # add_start_point = (new_reflect_point[0] + , n)
+                            # copy_start_points.append()
+                            print(new_reflect_point, '===================')
+                            # new_start_point = cal_reflect_start(new_reflect_point)
+                            # print(new_start_point, '===================')
+                            copy_start_points.append((new_reflect_point[0] + new_reflect_point[2], new_reflect_point[1] + new_reflect_point[3], new_reflect_point[2], new_reflect_point[3]))
+                            # print(a)
+                            break
 
-                print('position[intersect_grid]', position[intersect_grid])
+                # 在所有的可能的反射面里面求出距离光点最近的 新的反射点
+                # 新的反射点 update start_point
+                # 如果是 A
                 if position[intersect_grid] == 'A':
-                    reflect_point = cal_reflect_start(intersect_point)
+                    # new_reflect_point = cal_reflect_start(intersect_point)
                     # calculate passed goal
                     # 计算所有经过的goal
-                    # print('lazor_points', lazor_points)
-                    pass_goal(lazor_points, copy_goal_points, reflect_point)
+                    pass_goal(lazor_points, copy_goal_points, new_reflect_point)
+                    start_point = new_reflect_point
                     print(position[intersect_grid], 'reflect')
-                    print('A reflect grid', intersect_grid)
+                    print(intersect_grid)
 
                 # 如果是 'B' 碰到B 光线就没了
                 # 和 A 的intersect point是一样的 都是相交的点
                 # 后续结果是没了 没光了 直接跳出循环 （A是反射）
                 if position[intersect_grid] == 'B':
-                    reflect_point = cal_reflect_start(intersect_point)
-                    pass_goal(lazor_points, copy_goal_points, reflect_point)
+                    # start_point = cal_reflect_start(intersect_point)
+                    pass_goal(lazor_points, copy_goal_points, new_reflect_point)
+                    start_point = new_reflect_point
                     print(position[intersect_grid])
                     print(intersect_grid)
                     break
@@ -306,42 +369,47 @@ def check_position(position, grid, start_points, goal_points):
                 # if new_start_point in start_points:
                 #     continue
                 if position[intersect_grid] == 'C':
+<<<<<<< HEAD
                     new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] +
                                        intersect_point[3], intersect_point[2], intersect_point[3])
-                    print('new_start_point', new_start_point)
-
                     if new_start_point in start_points:
+=======
+                    new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
+                    # 减少重复计算 如果new在start_point里面已经存在了 直接continue
+                    if new_start_point in copy_start_points:
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
                         continue
                     # C 有两种情况 1 一种是光线从射到外表面 --> 外表面反射 + 投射
                     #            2 光线射到内表面 --> 不反射 只投射
 
                     # 反射
-                    reflect_point = cal_reflect_start(intersect_point)
-                    print('reflect_point', reflect_point)
+                    start_point = new_reflect_point
+                    print('new_reflect_point', new_reflect_point)
                     # calculate passed goal
                     # 计算所有经过的goal
+<<<<<<< HEAD
                     pass_goal(lazor_points, copy_goal_points, reflect_point)
-
                     print(position[intersect_grid], 'reflect')
-                    # print('7&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-                    print('lazor_points', lazor_points)
                     print(intersect_grid)
 
                     # 投射
                     # 直接通过的相当于从intersect_point + (dx dy)的位置增加一个新的光路
-                    # new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] +
-                    #                    intersect_point[3], intersect_point[2], intersect_point[3])
-                    # print('new_start_point', new_start_point)
-                    # pass_goal(lazor_points, copy_goal_points, new_start_point)
-                    start_points.append(new_start_point)
-
-                    print(position[intersect_grid], '投射')
-                    print('lazor_points', lazor_points)
-                    print(intersect_grid)
-                    break
-                # if count > 5:
-                    # break
-
+                    new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] +
+                                       intersect_point[3], intersect_point[2], intersect_point[3])
+=======
+                    pass_goal(lazor_points, copy_goal_points, start_point)
+                    # print(position[intersect_grid], 'reflect')
+                    # print(intersect_grid)
+                    
+                    # 投射
+                    # 直接通过的相当于从intersect_point + (dx dy)的位置增加一个新的光路
+                    # new_start_point = (intersect_point[0] + intersect_point[2], intersect_point[1] + intersect_point[3], intersect_point[2], intersect_point[3])
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
+                    pass_goal(lazor_points, copy_goal_points, new_start_point)
+                    copy_start_points.append(new_start_point)
+                    # print(position[intersect_grid], '投射')
+                    # print(intersect_grid)
+                    
 
             print('copy_goal_points', copy_goal_points)
 
@@ -357,8 +425,6 @@ def check_position(position, grid, start_points, goal_points):
     if len(copy_goal_points) == 0:
         print('成功了！')
         return True
-    else:
-        print('失败')
     return False
 
 
@@ -369,26 +435,42 @@ max_y = 0
 def find_solution(file):
     global max_x, max_y
     # read the file
+<<<<<<< HEAD
     grid, blocks, start_points, intersect_points, max_x, max_y = read_bff(file)
 
     # find all possible combination between blocks and its position in grid
+=======
+    grid, blocks, start_points, intersect_points, fixed_block, max_x, max_y = read_bff(file)
+    
+    # find all possible combination between blocks and its position in grid 
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
     all_poss_posi = find_all_positions(blocks, grid)
-    # print(list(all_poss_posi))
+    # print(all_poss_posi)
     # cal_lazor(start_points[0], grid)
     count = 0
-    # position = {(5, 3): 'A', (5, 5): 'C'}
+    # position = {(3, 5): 'C', (5, 5): 'A', (3, 3): 'A'}
     # check_position(position, grid, start_points, intersect_points)
 
     for temp in all_poss_posi:
-        print('temp', temp)
-        position = {}
+        # print(temp)
+        block_position = {}
         for i, index in enumerate(temp[1]):
+<<<<<<< HEAD
             position[index] = temp[0][i]
-            print('i', i, index)
+
+=======
+            block_position[index] = temp[0][i]
+        
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
         count += 1
         print(count)
+        print(block_position)
+        print(fixed_block)
+        # position = dict(block_position, **fixed_block)
+        position=block_position.copy()
+        position.update(fixed_block)
         if check_position(position, grid, start_points, intersect_points):
-            print('position', position)
+            print('block_position', block_position)
             return
 
     print(count)
@@ -397,10 +479,10 @@ def find_solution(file):
 
 
 if __name__ == "__main__":
-    print('****************************************************************************')
-    print('****************************************************************************')
-    # find_solution('tiny_5.bff')
-    find_solution('mad_1.bff')
-    # find_solution('mad_1_1.bff')
-    # find_solution('easy.bff')
+<<<<<<< HEAD
+    find_solution('easy.bff')
     # {(1, 2): 'A', (3, 2): 'C'}
+=======
+    find_solution('tiny_5.bff')
+    # {(1, 2): 'A', (3, 2): 'C'}
+>>>>>>> 881ca95c1e873d8a66b6738456b35f8fcd55ecb4
