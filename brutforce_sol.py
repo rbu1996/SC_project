@@ -32,8 +32,8 @@ def read_bff(file):
                     if block == 'o':
                         grid.add(((x + 1) * 2 - 1, y))
                     # fixed block 
-                    if block == 'A' or 'B' or 'C':
-
+                    if block == 'A' or block == 'B' or block == 'C':
+                        fixed_block[((x + 1) * 2 - 1, y)] = block
                     # print(row)
                 y += 2
                 line = f.readline()
@@ -67,8 +67,9 @@ def read_bff(file):
     print('intersect_points', intersect_points)
     print('max_x', max_x * 2)
     print('max_y', max_y - 1)
+    print('fixed_block', fixed_block)
 
-    return grid, blocks, start_points, intersect_points, max_x * 2, max_y - 1
+    return grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
 def get_blocks_list(blocks):
     block_list = []
@@ -347,11 +348,11 @@ max_y = 0
 def find_solution(file):
     global max_x, max_y
     # read the file
-    grid, blocks, start_points, intersect_points, max_x, max_y = read_bff(file)
+    grid, blocks, start_points, intersect_points, fixed_block, max_x, max_y = read_bff(file)
     
     # find all possible combination between blocks and its position in grid 
     all_poss_posi = find_all_positions(blocks, grid)
-    print(all_poss_posi)
+    # print(all_poss_posi)
     # cal_lazor(start_points[0], grid)
     count = 0
     # position = {(3, 5): 'C', (5, 5): 'A', (3, 3): 'A'}
@@ -359,14 +360,19 @@ def find_solution(file):
     
     for temp in all_poss_posi:
         # print(temp)
-        position = {}
+        block_position = {}
         for i, index in enumerate(temp[1]):
-            position[index] = temp[0][i]
+            block_position[index] = temp[0][i]
         
         count += 1
         print(count)
+        print(block_position)
+        print(fixed_block)
+        # position = dict(block_position, **fixed_block)
+        position=block_position.copy()
+        position.update(fixed_block)
         if check_position(position, grid, start_points, intersect_points):
-            print('position', position)
+            print('block_position', block_position)
             return
         
     print(count)
@@ -374,5 +380,5 @@ def find_solution(file):
     # position {(7, 3): 'A', (5, 9): 'A', (7, 5): 'A', (3, 9): 'A', (5, 3): 'A'}
 
 if __name__ == "__main__":
-    find_solution('numbered_6.bff')
+    find_solution('tiny_5.bff')
     # {(1, 2): 'A', (3, 2): 'C'}

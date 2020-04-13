@@ -13,8 +13,8 @@
 #     print('===')
 
 dir = {1: 'a', 2: 'b'}
-if 1 in dir.keys():
-    print('==')
+dir2 = {5:'d'}
+print(dict(**dir, **dir2))
 
 '''
 import itertools
