@@ -190,6 +190,9 @@ def get_intersect_point(intersect_grid, lazor_points, reflect_point):
 
 
 def get_intersect_grid(intersect_point):
+    '''
+    comment
+    '''
     grid = (0, 0)
     x = intersect_point[0]
     y = intersect_point[1]
