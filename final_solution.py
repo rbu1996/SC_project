@@ -17,7 +17,7 @@ class Block():
                 Type of the block in str format
 
         **output**
-            True/ False
+            True/ False: *boolean*
         """
         if nei_block == 'A' or nei_block == 'B':
             return True
@@ -40,7 +40,7 @@ class Block():
                 Individual points targets lazor need to hit
 
         **output**
-            True/False
+            True/False: *boolean*
         """
 
         pass_goal(lazor_points, copy_goal_points, new_reflect_point)
@@ -179,7 +179,7 @@ def in_grid(x, y):
             location of a point
 
     **output**
-        true/false
+        True/False: *boolean*
     """
 
     if x >= 0 and x <= max_x and y >= 0 and y <= max_y:
@@ -342,7 +342,7 @@ def check_position(position, grid, start_points, goal_points):
         goal_points: *set, tuple*
             Targets lazor need to hit. Same thing of intersect_points
     **output**
-        true/false
+        Ture/False: *boolean*
     """
 
     copy_goal_points = goal_points.copy()
