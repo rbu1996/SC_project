@@ -11,11 +11,11 @@ class Block():
     def lazor_end(self, nei_block):
         """
         When lazor hits A and B, lazor light no longer moves forward
-        
+
         **parameter**
             nei_block: *str*
                 Type of the block in str format
-        
+
         **output**
             True/ False
         """
@@ -26,7 +26,7 @@ class Block():
     def block_reflect_lazor(self, lazor_points, copy_goal_points, new_reflect_point, intersect_point, start_points):
         """
         A and C reflects light. Light also goes through C.
-        
+
         **parameter**
             lazor_points: *list, tuple*
                 List of points the lazor passes through
@@ -147,10 +147,11 @@ def read_bff(file):
     print(grid)
     return grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
+
 def find_all_positions(blocks, grid):
     """
     List out all the blocks and grid points.
-    
+
     **parameters**
         blocks: *list, str*
             Type of the blocks
@@ -172,11 +173,11 @@ def find_all_positions(blocks, grid):
 def in_grid(x, y):
     """
     Verify if the x and y are inside the grid area
-    
+
     **parameters**
         x, y: *int*
             location of a point
-    
+
     **output**
         true/false
     """
@@ -189,13 +190,13 @@ def in_grid(x, y):
 def cal_lazor(point, grid):
     """
     Grid blocks which the lazer(s) pass
-    
+
     **parameters**
         point: *tuple*
             point and the lazor direction
         grid: *set*
             locations of available grid boxes
-    
+
     **output**
         lazor_points: *list, tuple*
             Points the lazer passes by and the lazor direction
@@ -229,7 +230,7 @@ def cal_lazor(point, grid):
 def get_intersect_point(intersect_grid, lazor_points, start_point):
     """
     To get points that the lazor could to intersect
-    
+
     **parameters**
         intersect_grid: *set, tuple*
             Grids that lazor intersects
@@ -257,9 +258,9 @@ def get_intersect_point(intersect_grid, lazor_points, start_point):
 
 def get_intersect_grid(intersect_point):
     """
-    
+
     To get grids that the lazor needs to intersect in order to reach the intersect_point
-    
+
     **parameters**
         intersect_points: *set, tuple*
             Targets lazor need to hit
@@ -284,7 +285,7 @@ def get_intersect_grid(intersect_point):
 def cal_reflect_start(point):
     """
     Find the point and new direction when the lazor is reflect
-    
+
     **parameters**
         point: *tuple*
             Points lazor intersects and reflected by block A
@@ -306,7 +307,7 @@ def cal_reflect_start(point):
 def pass_goal(lazor_points, copy_goal_points, reflect_point):
     """
     Remove the goal points if the lazor passes through it
-    
+
     **parameters**
         lazor_points: *list, tuple*
             Points the lazer passes by and the lazor direction
@@ -314,7 +315,7 @@ def pass_goal(lazor_points, copy_goal_points, reflect_point):
             Copy of targets the lazor should pass through as solution
         reflect_point: *tuple*
             Individual point where lazor reflects and its new direction
-    
+
     **output**
         N/A
     """
@@ -420,18 +421,17 @@ def get_map(grid_map, sol_position, max_x, max_y):
     **output**
         sol_map: *list*
             list of output map 
-
     """
+
     sol_list = []
     x = int(max_x / 2)
     y = int(max_y / 2)
-    
 
     for i, row in enumerate(grid_map):
         for j, column in enumerate(row):
             map_key = (column[0], column[1])
             for key, values in sol_position.items():
-                if key == map_key:  
+                if key == map_key:
                     column[2] = values
             sol_list.append(column[2])
 
@@ -440,6 +440,9 @@ def get_map(grid_map, sol_position, max_x, max_y):
 
 
 def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
+    """
+    Generate the picture of solved result
+    """
 
     x = int(max_x / 2)
     y = int(max_y / 2)
@@ -468,6 +471,10 @@ def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
 
 
 def output_txt(filename, sol_map):
+    """
+    Generate the txt file of the solved result.
+    """
+    
     with open('%s_sol.txt' % filename, 'w') as f:
         for row in sol_map:
             for item in row:
