@@ -28,15 +28,15 @@ class Block():
         A and C reflects light. Light also goes through C.
 
         **parameter**
-            lazor_points: *list, tuple*
+            lazor_points: *list*
                 List of points the lazor passes through
             copy_goal_points: *set*
                 copy of targets the lazor should pass through as solution
             new_reflect_point: *tuple*
                 Points where lazor reflects and its new direction
-            start_points: *list, tuple* 
+            start_points: *list* 
                 Start points of lazors, and their direction
-            intersect_points: *set, tuple*
+            intersect_points: *set*
                 Individual points targets lazor need to hit
 
         **output**
@@ -77,11 +77,11 @@ def read_bff(file):
             Grid location and if it is available for blocks
         grid: *set*
             locations of available grids.
-        blocks: *list, str*
+        blocks: *list*
             Tpye A, B, or C of blocks
-        start_points: *list, tuple* 
+        start_points: *list* 
             start points of lazors, and their direction
-        intersect_points: *set, tuple*
+        intersect_points: *set*
             Targets lazor need to hit
         fixed_block: *dict*
             location and type of fixed A, B, or C blocks
@@ -143,8 +143,8 @@ def read_bff(file):
 
         line = f.readline()
     f.close()
-    print(grid_map)
-    print(grid)
+    # print(grid_map)
+    # print(grid)
     return grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
 
@@ -153,9 +153,9 @@ def find_all_positions(blocks, grid):
     List out all the blocks and grid points.
 
     **parameters**
-        blocks: *list, str*
+        blocks: *list*
             Type of the blocks
-        grid: *set, tuple*
+        grid: *set*
             Grid points which are free
 
     **output**
@@ -198,9 +198,9 @@ def cal_lazor(point, grid):
             locations of available grid boxes
 
     **output**
-        lazor_points: *list, tuple*
+        lazor_points: *list*
             Points the lazer passes by and the lazor direction
-        lazor_pass_grid: *set, tuple*
+        lazor_pass_grid: *set*
             Grids the lazor passes by
     """
 
@@ -232,7 +232,7 @@ def get_intersect_point(intersect_grid, lazor_points, start_point):
     To get points that the lazor could to intersect
 
     **parameters**
-        intersect_grid: *set, tuple*
+        intersect_grid: *set*
             Grids that lazor intersects
         lazor_points: *list*
             Points that the lazor intersects and the lazor direction
@@ -262,7 +262,7 @@ def get_intersect_grid(intersect_point):
     To get grids that the lazor needs to intersect in order to reach the intersect_point
 
     **parameters**
-        intersect_points: *set, tuple*
+        intersect_points: *set*
             Targets lazor need to hit
 
     **output**
@@ -309,7 +309,7 @@ def pass_goal(lazor_points, copy_goal_points, reflect_point):
     Remove the goal points if the lazor passes through it
 
     **parameters**
-        lazor_points: *list, tuple*
+        lazor_points: *list*
             Points the lazer passes by and the lazor direction
         copy_goal_points: *set*
             Copy of targets the lazor should pass through as solution
@@ -335,11 +335,11 @@ def check_position(position, grid, start_points, goal_points):
     The program breaks when the lazor is either blocked or going out of the layout.
 
     **parameters**
-        position: *dict: tuple, str*
+        position: *dict: tuple*
             Possible locations for blocks
         grid: *set*
             locations of available grids
-        goal_points: *set, tuple*
+        goal_points: *set*
             Targets lazor need to hit. Same thing of intersect_points
     **output**
         Ture/False: *boolean*
@@ -396,7 +396,7 @@ def check_position(position, grid, start_points, goal_points):
 
     if len(copy_goal_points) == 0:
         print('Find the solution!')
-        print(start_point)
+        # print(start_point)
         return True
     return False
 
@@ -414,9 +414,9 @@ def get_map(grid_map, sol_position, max_x, max_y):
             Location and availability of grid
         sol_position: *dict*
             Locations of solved blocks
-        max_x:*dict*
+        max_x:*int*
             Largest number on spot in x
-        max_y:*dict*
+        max_y:*int*
             Largest number on spot in y
     **output**
         sol_map: *list*
@@ -442,8 +442,26 @@ def get_map(grid_map, sol_position, max_x, max_y):
 def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
     """
     Generate the picture of solved result
-    """
+        **parameter**
+        filename: *str*
+            filename of the image
+        sol_map: *list*
+            list of output map
+        max_x:*int*
+            Largest number on spot in x
+        max_y:*int*
+            Largest number on spot in y
+        blockSize: *int*
+            How many pixels each block is comprised of
+        frameSize: *int*
+            How mang pixels each frame (width) is comprised of 
 
+    **output**
+        *image*
+
+    """
+    
+    print(blockSize, type(blockSize))
     x = int(max_x / 2)
     y = int(max_y / 2)
 
@@ -473,6 +491,15 @@ def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
 def output_txt(filename, sol_map):
     """
     Generate the txt file of the solved result.
+        **parameter**
+        filename: *str*
+            filename of the image
+        sol_map: *list*
+            list of output map
+
+    **output**
+        *txt file*
+
     """
 
     with open('%s_sol.txt' % filename, 'w') as f:
@@ -491,10 +518,7 @@ def find_solution(file, output_image, output_file):
         file: *str*
             The .bff file which is the layout of the game
     **output**
-        index: *tuple*
-            Position of blocks
-        clas.block_type: *str*
-            Type of block
+        N/A
     """
 
     global max_x, max_y
@@ -533,5 +557,5 @@ def find_solution(file, output_image, output_file):
 
 if __name__ == "__main__":
     start_time = time.time()
-    find_solution('dark_1.bff', output_image=False, output_file=True)
+    find_solution('dark_2.bff', output_image=False, output_file=True)
     print("--- %s seconds ---" % (time.time() - start_time))
