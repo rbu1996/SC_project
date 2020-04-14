@@ -474,7 +474,7 @@ def output_txt(filename, sol_map):
     """
     Generate the txt file of the solved result.
     """
-    
+
     with open('%s_sol.txt' % filename, 'w') as f:
         for row in sol_map:
             for item in row:
