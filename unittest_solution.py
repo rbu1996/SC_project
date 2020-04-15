@@ -1,5 +1,5 @@
 import unittest
-import final_solution   
+import final_solution
 
 
 class SoultionTestCase(unittest.TestCase):
@@ -22,13 +22,13 @@ class SoultionTestCase(unittest.TestCase):
         print('tearDown\n')
     
     def test_find_all_positions(self):
-        # because the grid is a set, so the result is not stable. 
-        print('test_find_all_positions')
-        blocks = ['A', 'B']
-        grid = {(1, 3), (3, 3), (3, 1), (5, 1), (1, 1), (5, 3)}
-        res = [(('B', 'A'), ((1, 3), (3, 3))), (('B', 'A'), ((1, 3), (3, 1))), (('B', 'A'), ((1, 3), (5, 1))), (('B', 'A'), ((1, 3), (1, 1))), (('B', 'A'), ((1, 3), (5, 3))), (('B', 'A'), ((3, 3), (3, 1))), (('B', 'A'), ((3, 3), (5, 1))), (('B', 'A'), ((3, 3), (1, 1))), (('B', 'A'), ((3, 3), (5, 3))), (('B', 'A'), ((3, 1), (5, 1))), (('B', 'A'), ((3, 1), (1, 1))), (('B', 'A'), ((3, 1), (5, 3))), (('B', 'A'), ((5, 1), (1, 1))), (('B', 'A'), ((5, 1), (5, 3))), (('B', 'A'), ((1, 1), (5, 3))), (('A', 'B'), ((1, 3), (3, 3))), (('A', 'B'), ((1, 3), (3, 1))), (('A', 'B'), ((1, 3), (5, 1))), (('A', 'B'), ((1, 3), (1, 1))), (('A', 'B'), ((1, 3), (5, 3))), (('A', 'B'), ((3, 3), (3, 1))), (('A', 'B'), ((3, 3), (5, 1))), (('A', 'B'), ((3, 3), (1, 1))), (('A', 'B'), ((3, 3), (5, 3))), (('A', 'B'), ((3, 1), (5, 1))), (('A', 'B'), ((3, 1), (1, 1))), (('A', 'B'), ((3, 1), (5, 3))), (('A', 'B'), ((5, 1), (1, 1))), (('A', 'B'), ((5, 1), (5, 3))), (('A', 'B'), ((1, 1), (5, 3)))]
-        # print('=====',self.solution.find_all_positions(blocks, grid))
-        self.assertEquals(res, self.solution.find_all_positions(blocks, grid))
+        # because the grid is a set, the result is not stable. 
+        # the return value of itertools.product(*temp) is a class, so the product result is not stable.
+        # Here I change the data type to set, the order is ignored. 
+        blocks = ['A', 'A']
+        grid = {(1, 3), (3, 3), (3, 1), (1, 5), (1, 1), (3, 5)}
+        res = [(('A', 'A'), ((1, 3), (3, 3))), (('A', 'A'), ((1, 3), (3, 1))), (('A', 'A'), ((1, 3), (1, 5))), (('A', 'A'), ((1, 3), (1, 1))), (('A', 'A'), ((1, 3), (3, 5))), (('A', 'A'), ((3, 3), (3, 1))), (('A', 'A'), ((3, 3), (1, 5))), (('A', 'A'), ((3, 3), (1, 1))), (('A', 'A'), ((3, 3), (3, 5))), (('A', 'A'), ((3, 1), (1, 5))), (('A', 'A'), ((3, 1), (1, 1))), (('A', 'A'), ((3, 1), (3, 5))), (('A', 'A'), ((1, 5), (1, 1))), (('A', 'A'), ((1, 5), (3, 5))), (('A', 'A'), ((1, 1), (3, 5)))]
+        self.assertEquals(set(res), set([i for i in self.solution.find_all_positions(blocks, grid)]))
     
     def test_cal_reflect_start(self):
         point = (1, 2, 1, 1)
@@ -42,11 +42,10 @@ class SoultionTestCase(unittest.TestCase):
         res = (0, 1, 1, 1)
         self.assertEquals(res, self.solution.get_intersect_point(intersect_grid, lazor_points, start_point))
 
-    # this oen will fail. (test fail case)
-    # def test_get_intersect_grid(self):
-    #     intersect_point = (2, 3, 1, 1)
-    #     grid = (3, 3)
-    #     self.assertEquals(grid, self.solution.test_get_intersect_grid(intersect_point))
+    def test_get_intersect_grid(self):
+        intersect_point = (6, 3, 1, -1)
+        grid = (7, 3)
+        self.assertEquals(grid, self.solution.get_intersect_grid(intersect_point))
 
     def test_check_position(self):
         position = {(3, 1): self.solution.Block('A'), (5, 1): self.solution.Block('B')}
@@ -54,6 +53,16 @@ class SoultionTestCase(unittest.TestCase):
         start_points = [(0, 1, 1, 1)]
         goal_points = {(3, 4)}
         self.assertEquals(False, self.solution.check_position(position, grid, start_points, goal_points))
+    
+    # def test_cal_lazor(self):
+    #     # the cal_lazor cannot do the unittest here, because it uses a global parameter max_x and max_y
+    #     point = (2, 3, -1, -1)
+    #     grid = {(1, 3), (3, 3), (3, 1), (1, 5), (1, 1), (3, 5)}
+    #     lazor_points = set([(2, 3, -1, -1), (1, 2, -1, -1), (0, 1, -1, -1)])
+    #     lazor_pass_grid = {(1, 3), (1, 1)}
+    #     res_lazor_points, res_lazor_pass_grid = self.solution.cal_lazor(point, grid)
+    #     self.assertEquals(lazor_points, set(res_lazor_points))
+    #     self.assertEquals(lazor_pass_grid, set(res_lazor_pass_grid))
 
 if __name__ == '__main__':
     unittest.main()
