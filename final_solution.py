@@ -10,43 +10,39 @@ class Block():
 
     def lazor_end(self, nei_block):
         """
-        When lazor hits A and B, lazor light no longer moves forward
+        This is to find if the block is A or B, because lazor no longer moves forward when encounters A and B.
 
         **parameter**
             nei_block: *str*
                 Type of the block in str format
 
         **output**
-            True/ False
+            True/ False: *boolean*
         """
         if nei_block == 'A' or nei_block == 'B':
             return True
         return False
 
-    def block_reflect_lazor(
-            self,
-            lazor_points,
-            copy_goal_points,
-            new_reflect_point,
-            intersect_point,
-            start_points):
+    def block_reflect_lazor(self, lazor_points, copy_goal_points, new_reflect_point, intersect_point,
+                            start_points):
         """
-        A and C reflects light. Light also goes through C.
+        This is to find if the block is A, B, or else (C). When it is A or B, lazor is reflect. When it is C, lazor can go
+        through the block.
 
         **parameter**
-            lazor_points: *list, tuple*
+            lazor_points: *list*
                 List of points the lazor passes through
             copy_goal_points: *set*
-                copy of targets the lazor should pass through as solution
+                Copy of targets the lazor should pass through as solution
             new_reflect_point: *tuple*
                 Points where lazor reflects and its new direction
-            start_points: *list, tuple*
+            start_points: *list*
                 Start points of lazors, and their direction
-            intersect_points: *set, tuple*
+            intersect_points: *set*
                 Individual points targets lazor need to hit
 
         **output**
-            True/False
+            True/ False: *boolean*
         """
 
         pass_goal(lazor_points, copy_goal_points, new_reflect_point)
@@ -71,8 +67,9 @@ class Block():
 
 def read_bff(file):
     """
-    Define the game panel into a grid assignment
-    Define the length of the grid in x and y direction (size)
+    This is to read the input file, which is the game layout.
+    The function defines the game panel into a grid assignment and
+    defines the length of the grid in x and y direction (size).
 
     **parameters**
         file: *str*
@@ -83,17 +80,18 @@ def read_bff(file):
             Grid location and if it is available for blocks
         grid: *set*
             locations of available grids.
-        blocks: *list, str*
+        blocks: *list*
             Tpye A, B, or C of blocks
-        start_points: *list, tuple*
+        start_points: *list*
             start points of lazors, and their direction
-        intersect_points: *set, tuple*
+        intersect_points: *set*
             Targets lazor need to hit
         fixed_block: *dict*
             location and type of fixed A, B, or C blocks
         max_x, max_y: *int*
             maximum values of points (where the boundary of grid is)
     """
+
     f = open(file)
     line = f.readline()
 
@@ -148,27 +146,29 @@ def read_bff(file):
             line = f.readline()
 
         line = f.readline()
+
     f.close()
-    print('grid', grid)
-    print('blocks', blocks)
-    print('start_points', start_points)
-    print('intersect_points', intersect_points)
-    print('max_x', max_x * 2)
-    print('max_y', max_y - 1)
-    print('fixed_block', fixed_block)
-    print('----file-----')
+    # print('grid', grid)
+    # print('blocks', blocks)
+    # print('start_points', start_points)
+    # print('intersect_points', intersect_points)
+    # print('max_x', max_x * 2)
+    # print('max_y', max_y - 1)
+    # print('fixed_block', fixed_block)
+    # print('----file-----')
     return grid_map, grid, blocks, start_points, intersect_points, fixed_block, max_x * 2, max_y - 1
 
 
 def find_all_positions(blocks, grid):
     """
-    List out all the blocks and grid points.
+    This function is to list out the combos of all the blocks and grids. 
+    By narrowing the range down, we can later find out which block in which grid later which solve the game.
 
     **parameters**
-        blocks: *list, str*
+        blocks: *list*
             Type of the blocks
-        grid: *set, tuple*
-            Grid points which are free
+        grid: *set*
+            Grid points which are available
 
     **output**
         res: *intertools.prouduct*
@@ -184,14 +184,14 @@ def find_all_positions(blocks, grid):
 
 def in_grid(x, y):
     """
-    Verify if the x and y are inside the grid area
+    This is to verify if the x and y are inside the grid area.
 
     **parameters**
         x, y: *int*
             location of a point
 
     **output**
-        true/false
+        True/False: *boolean*
     """
 
     if x >= 0 and x <= max_x and y >= 0 and y <= max_y:
@@ -201,7 +201,8 @@ def in_grid(x, y):
 
 def cal_lazor(point, grid):
     """
-    Grid blocks which the lazer(s) pass
+    This is to find the grids and points which the lazer(s) pass.
+    For the points, it also finds the direction of lazor when passes.
 
     **parameters**
         point: *tuple*
@@ -210,9 +211,9 @@ def cal_lazor(point, grid):
             locations of available grid boxes
 
     **output**
-        lazor_points: *list, tuple*
+        lazor_points: *list*
             Points the lazer passes by and the lazor direction
-        lazor_pass_grid: *set, tuple*
+        lazor_pass_grid: *set*
             Grids the lazor passes by
     """
 
@@ -241,19 +242,20 @@ def cal_lazor(point, grid):
 
 def get_intersect_point(intersect_grid, lazor_points, start_point):
     """
-    To get points that the lazor could to intersect
+    This is to get points that the lazor could intersect during the process.
 
     **parameters**
-        intersect_grid: *set, tuple*
+        intersect_grid: *set*
             Grids that lazor intersects
         lazor_points: *list*
             Points that the lazor intersects and the lazor direction
         start_point: *tuple*
-            Where the lazor starts. It can be where the lazor is reflected or refracted
+            Where the lazor starts. It can be where the lazor is reflected or refracted which generates
+            a new start
 
     **output**
         point: *tuple*
-        Points lazor intersects and the direction of lazor when intersects
+            Points lazor intersects and the direction of lazor when intersects
     """
 
     possible_intersect_point = set()
@@ -270,11 +272,10 @@ def get_intersect_point(intersect_grid, lazor_points, start_point):
 
 def get_intersect_grid(intersect_point):
     """
-
-    To get grids that the lazor needs to intersect in order to reach the intersect_point
+    This is to get grids that the lazor needs to intersect for intersect_point.
 
     **parameters**
-        intersect_points: *set, tuple*
+        intersect_points: *set*
             Targets lazor need to hit
 
     **output**
@@ -296,7 +297,7 @@ def get_intersect_grid(intersect_point):
 
 def cal_reflect_start(point):
     """
-    Find the point and new direction when the lazor is reflect
+    Find the point and new direction when the lazor is reflect.
 
     **parameters**
         point: *tuple*
@@ -318,10 +319,10 @@ def cal_reflect_start(point):
 
 def pass_goal(lazor_points, copy_goal_points, reflect_point):
     """
-    Remove the goal points if the lazor passes through it
+    This is to remove the goal points if the lazor passes through it.
 
     **parameters**
-        lazor_points: *list, tuple*
+        lazor_points: *list*
             Points the lazer passes by and the lazor direction
         copy_goal_points: *set*
             Copy of targets the lazor should pass through as solution
@@ -342,19 +343,22 @@ def pass_goal(lazor_points, copy_goal_points, reflect_point):
 
 def check_position(position, grid, start_points, goal_points):
     """
-    Compares the points lazor passes through with the locations of
+    This is to compare the points which lazor passes through with the locations of
     pre-defined targets.
-    The program breaks when the lazor is either blocked or going out of the layout.
+    The program breaks when the lazor is either blocked or going out of the game layout.
 
     **parameters**
-        position: *dict: tuple, str*
+        position: *dict*
             Possible locations for blocks
         grid: *set*
             locations of available grids
-        goal_points: *set, tuple*
+        start_points: *list*
+            Points where the lazor starts
+        goal_points: *set*
             Targets lazor need to hit. Same thing of intersect_points
+
     **output**
-        true/false
+        True/False: *boolean*
     """
 
     copy_goal_points = goal_points.copy()
@@ -425,20 +429,21 @@ max_y = 0
 
 def get_map(grid_map, sol_position, max_x, max_y):
     """
-    Get the map output of the solution.
+    This is to get the output map of the solution to prepare for txt and img output.
 
     **parameter**
         grid_map: *list*
             Location and availability of grid
         sol_position: *dict*
             Locations of solved blocks
-        max_x:*dict*
+        max_x:*int*
             Largest number on spot in x
-        max_y:*dict*
+        max_y:*int*
             Largest number on spot in y
+
     **output**
         sol_map: *list*
-            list of output map
+            List of output map
     """
 
     sol_list = []
@@ -459,8 +464,25 @@ def get_map(grid_map, sol_position, max_x, max_y):
 
 def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
     """
-    Generate the picture of solved result
-    """
+    This is to generate the img of solution.
+
+        **parameter**
+        filename: *str*
+            filename of the image
+        sol_map: *list*
+            list of output map
+        max_x:*int*
+            Largest number on spot in x
+        max_y:*int*
+            Largest number on spot in y
+        blockSize: *int*
+            How many pixels each block is comprised of
+        frameSize: *int*
+            How mang pixels each frame (width) is comprised of 
+
+    **output**
+        *image*
+        """
 
     x = int(max_x / 2)
     y = int(max_y / 2)
@@ -490,7 +512,16 @@ def output_img(filename, sol_map, max_x, max_y, blockSize, frameSize):
 
 def output_txt(filename, sol_map):
     """
-    Generate the txt file of the solved result.
+    This is to generate the txt file to show the solution.
+
+        **parameter**
+        filename: *str*
+            filename of the image
+        sol_map: *list*
+            list of output map
+
+    **output**
+        *txt file*
     """
 
     with open('%s_sol.txt' % filename, 'w') as f:
@@ -502,17 +533,16 @@ def output_txt(filename, sol_map):
 
 def find_solution(file, output_image, output_file):
     """
-    Solve the lazor game.
+    This is to find the solution of the lazor game.
     Find locations of grid blocks when the lazor passes all the targets.
+    Output the img and txt files.
 
     **parameters**
         file: *str*
-            The .bff file which is the layout of the game
+            The name of .bff file which is the layout of the game
     **output**
-        index: *tuple*
-            Position of blocks
-        clas.block_type: *str*
-            Type of block
+        filename: *str*
+            New file name 
     """
 
     global max_x, max_y
